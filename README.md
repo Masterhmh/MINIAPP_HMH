@@ -1,7 +1,4 @@
-   <h1>GIỚI THIỆU</h1>
-    <div class="info-section">
-      <div class="info-card">
-        <h1>Về MiniApp</h1>
+  <h1>Về MiniApp</h1>
         <p class="custom-text">
           Miniapp tài chính trên Telegram giúp bạn theo dõi thu nhập và chi tiêu dễ dàng. Dựa vào dữ liệu trong Google Sheet nó sẽ hiển thị danh sách giao dịch trong ngày, biểu đồ chi tiêu theo phân loại chi tiết và biểu đồ thu nhập – chi tiêu hàng tháng ngay trong Telegram. 
         </p>
