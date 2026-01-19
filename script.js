@@ -931,7 +931,7 @@ function updateChartData(response) {
       responsive: true,
       maintainAspectRatio: true,
       aspectRatio: 1,
-      cutout: '70%',  // Lỗ giữa vừa phải, text nằm đẹp
+      cutout: '60%',  // Lỗ giữa vừa phải, text nằm đẹp
       plugins: {
         legend: { display: false },
         tooltip: {
