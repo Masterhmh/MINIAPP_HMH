@@ -844,7 +844,7 @@ function updateChartData(response) {
   const categories = response.categories;
   const totalAmount = chartData.reduce((sum, item) => sum + item.amount, 0);
 
-  // Mảng màu giữ nguyên (với note màu phía sau như cũ)
+  // Mảng màu giữ nguyên
   const backgroundColors = [
     '#FF6B6B', // Đỏ san hô
     '#FF8E53', // Cam cháy
@@ -909,8 +909,8 @@ function updateChartData(response) {
   customLegend.appendChild(leftColumn);
   customLegend.appendChild(rightColumn);
 
-  // === ĐỊNH DẠNG GIÁ TRỊ TỔNG Ở GIỮA ===
- let centerText = totalAmount.toLocaleString('vi-VN') + 'đ';
+  // === ĐỊNH DẠNG GIÁ TRỊ TỔNG Ở GIỮA - LUÔN ĐẦY ĐỦ ===
+  let centerText = totalAmount.toLocaleString('vi-VN') + 'đ';
 
   // === TẠO BIỂU ĐỒ DOUGHNUT ===
   window.myChart = new Chart(ctx, {
@@ -924,19 +924,26 @@ function updateChartData(response) {
           return backgroundColors[index % backgroundColors.length];
         }),
         borderWidth: 2,
-        borderColor: '#fff' // Viền trắng nhẹ giữa các phần
+        borderColor: '#fff'
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: true,
       aspectRatio: 1,
-      cutout: '65%', // Lỗ giữa đủ lớn để text đẹp
+      cutout: '70%',  // Lỗ giữa vừa phải, text nằm đẹp
       plugins: {
-        legend: { display: false }, // Tắt legend mặc định
+        legend: { display: false },
         tooltip: {
-          mode: 'index',
-          intersect: false,
+          enabled: true,
+          mode: 'nearest',
+          intersect: true,
+          position: 'nearest',
+          caretPadding: 20,
+          padding: 12,
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          titleFont: { size: 13 },
+          bodyFont: { size: 12 },
           callbacks: {
             label: function(tooltipItem) {
               const category = tooltipItem.label;
@@ -944,14 +951,7 @@ function updateChartData(response) {
               const percentage = ((amount / totalAmount) * 100).toFixed(1);
               return `${category}: ${amount.toLocaleString('vi-VN')}đ (${percentage}%)`;
             }
-          },
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleFont: { size: 12 },
-          bodyFont: { size: 10 },
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          padding: 8,
-          displayColors: true,
+          }
         },
         datalabels: {
           formatter: (value, context) => {
@@ -968,26 +968,26 @@ function updateChartData(response) {
     },
     plugins: [{
       id: 'centerTotalText',
-      afterDraw(chart) {
-        const { ctx, chartArea: { width, height } } = chart;
+      afterDatasetsDraw(chart) {  // ← Hook này đảm bảo text vẽ trước tooltip → tooltip luôn ở trên
+        const { ctx } = chart;
         ctx.save();
 
-        // Lấy màu text từ CSS variable để hỗ trợ dark mode tự động
         const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim() || '#333';
-
-        ctx.font = 'bold 20px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = textColor;
 
         const centerX = chart.width / 2;
         const centerY = chart.height / 2;
 
-        ctx.fillText('Tổng', centerX, centerY - 25);
+        // "Tổng" nhỏ, đẩy lên
+        ctx.font = 'bold 18px Inter, sans-serif';  // ← Cỡ chữ nhỏ hơn
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = textColor;
+        ctx.fillText('Tổng', centerX, centerY - 35);
 
-        ctx.font = 'bold 36px Inter, sans-serif';
-        ctx.fillStyle = textColor; // Áp dụng lại cho dòng giá trị tổng
-        ctx.fillText(centerText, centerX, centerY + 20);
+        // Giá trị tổng - cỡ chữ nhỏ hơn một chút
+        ctx.font = 'bold 26px Inter, sans-serif';  // ← Giảm size để gọn gàng
+        ctx.fillStyle = textColor;
+        ctx.fillText(centerText, centerX, centerY + 10);
 
         ctx.restore();
       }
