@@ -910,10 +910,7 @@ function updateChartData(response) {
   customLegend.appendChild(rightColumn);
 
   // === ĐỊNH DẠNG GIÁ TRỊ TỔNG Ở GIỮA ===
-  let centerText = totalAmount.toLocaleString('vi-VN');
-  if (totalAmount >= 1000000) {
-    centerText = (totalAmount / 1000000).toFixed(1) + 'M';
-  }
+ let centerText = totalAmount.toLocaleString('vi-VN') + 'đ';
 
   // === TẠO BIỂU ĐỒ DOUGHNUT ===
   window.myChart = new Chart(ctx, {
